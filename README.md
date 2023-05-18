@@ -1,4 +1,4 @@
-# Very short description of the package
+# Laravel simple Tasks
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/michal78/laravel-tasks.svg?style=flat-square)](https://packagist.org/packages/michal78/laravel-tasks)
 [![Total Downloads](https://img.shields.io/packagist/dt/michal78/laravel-tasks.svg?style=flat-square)](https://packagist.org/packages/michal78/laravel-tasks)
