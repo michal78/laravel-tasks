@@ -4,8 +4,6 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/michal78/laravel-tasks.svg?style=flat-square)](https://packagist.org/packages/michal78/laravel-tasks)
 ![GitHub Actions](https://github.com/michal78/laravel-tasks/actions/workflows/main.yml/badge.svg)
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
-
 ## Installation
 
 You can install the package via composer:
@@ -17,10 +15,43 @@ composer require michal78/laravel-tasks
 ## Usage
 
 ```php
-// Usage description here
+// Add the HasTasks trait to your model
+use Michal78\LaravelTasks\Traits\HasTasks;
+
+class User extends Model
+{
+    use HasTasks;
+}
+
+// Create a task
+$user->createTask('My task');
+
+// Create a task with a due date
+$user->createTask('My task', now()->addDays(7));
+
+// Create a task with a due date and a description
+$user->createTask('My task', now()->addDays(7), 'My task description');
+
+// Create a task with a due date, a description and a priority
+$user->createTask('My task', now()->addDays(7), 'My task description', 1);
+
+// Get all tasks
+$user->tasks;
+
+// Get all tasks that are not completed
+$user->tasks()->notCompleted()->get();
+
+// Get all tasks that are completed
+$user->tasks()->completed()->get();
+
+// Get all tasks that are completed and have a due date in the future
+$user->tasks()->completed()->future()->get();
 ```
 
-### Testing
+```php
+```
+
+### Testing (Not implemented yet)
 
 ```bash
 composer test
@@ -46,7 +77,3 @@ If you discover any security related issues, please email michal.skogemann@gmail
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-## Laravel Package Boilerplate
-
-This package was generated using the [Laravel Package Boilerplate](https://laravelpackageboilerplate.com).
