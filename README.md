@@ -24,16 +24,14 @@ class User extends Model
 }
 
 // Create a task
-$user->createTask('My task');
-
-// Create a task with a due date
-$user->createTask('My task', now()->addDays(7));
-
-// Create a task with a due date and a description
-$user->createTask('My task', now()->addDays(7), 'My task description');
-
-// Create a task with a due date, a description and a priority
-$user->createTask('My task', now()->addDays(7), 'My task description', 1);
+$user->addTask(
+    [
+        'name' => 'My task',
+        'description' => 'My task description',
+        'priority' => 2,
+        'due_date' => now()->addDays(7),
+    ]
+);
 
 // Get all tasks
 $user->tasks;
