@@ -49,14 +49,30 @@ class Task extends Model
 
     /**
      * @param Model $model
-     * @return void
+     * @return Task
      */
-    public function complete(Model $model): void
+    public function complete(Model $model): Task
     {
         $this->status = self::STATUS_COMPLETED;
         $this->completed_at = now();
         $this->completed_by = $model->id;
         $this->save();
+
+        return $this;
+    }
+
+
+    /**
+     * @param Model $model
+     * @return $this
+     */
+    public function assign(Model $model): Task
+    {
+        $this->assignee_id = $model->id;
+        $this->assignee_class = get_class($model);
+        $this->save();
+
+        return $this;
     }
 
     /**
@@ -81,7 +97,7 @@ class Task extends Model
      * @param $query
      * @return mixed
      */
-    public function scopeOverdue($query)
+    public function scopeOverdue($query): mixed
     {
         return $query->where('due_date', '<', now());
     }
@@ -90,7 +106,7 @@ class Task extends Model
      * @param $query
      * @return mixed
      */
-    public function scopeDueToday($query)
+    public function scopeDueToday($query): mixed
     {
         return $query->where('due_date', now()->format('Y-m-d'));
     }
@@ -254,7 +270,16 @@ class Task extends Model
      */
     public function schedule($date): void
     {
-        $this->due_date = $date;
-        $this->save();
+        $job = $this->getJob();
+
+        $job->delay($date)->dispatch();
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getJob(): mixed
+    {
+        return new $this->job($this->job_data);
     }
 }

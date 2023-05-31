@@ -10,7 +10,7 @@ trait HasTasks
     // Add task
     public function addTask($task)
     {
-        $this->tasks()->create($task);
+        return $this->tasks()->create($task);
     }
 
     // Get pending tasks
@@ -36,6 +36,6 @@ trait HasTasks
     // Complete task
     public function completeTask(Task $task)
     {
-        $task->complete($this);
+        return $task->complete($this);
     }
 }
