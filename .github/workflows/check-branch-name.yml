@@ -1,0 +1,24 @@
+name: Check branch name
+
+on:
+  push:
+    branches-ignore: 
+      - 'master'  # ignore the 'master' branch
+      - 'main'    # ignore the 'main' branch
+
+jobs:
+  check-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 2  # this is important, as the default is to only fetch the most recent commit
+
+    - name: Check branch name
+      run: |
+        commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
+        if [[ "${commit_message}" != "Apply fixes from StyleCI" && ! "${{ github.ref_name }}" =~ ^[0-9]{4}- ]]; then
+          echo "ERROR: Branch name '${{ github.ref_name }}' does not start with a valid issue number!"
+          exit 1
+        fi
