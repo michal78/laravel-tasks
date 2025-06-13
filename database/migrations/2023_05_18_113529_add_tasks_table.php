@@ -16,10 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->enum('status', ['pending', 'completed', 'running'])->default('pending');
-            $table->unsignedBigInteger('owner_id')->nullable();
-            $table->string('owner_class')->nullable();
-            $table->unsignedBigInteger('assignee_id')->nullable();
-            $table->string('assignee_class')->nullable();
+            $table->morphs('creator');
+            $table->morphs('assignee');
             $table->string('job')->nullable();
             $table->text('job_data')->nullable();
             $table->timestamp('due_date')->nullable();

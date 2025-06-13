@@ -15,7 +15,7 @@ class Task extends Model
     const STATUS_COMPLETED = 'completed';
     const STATUS_RUNNING = 'running';
 
-    protected $fillable = [
+    protected array $fillable = [
         'name',
         'description',
         'status',
@@ -31,12 +31,9 @@ class Task extends Model
         'completed_by',
     ];
 
-    /**
-     * @return MorphTo
-     */
     public function owner(): MorphTo
     {
-        return $this->morphTo('owner', 'owner_class', 'owner_id');
+        return $this->morphTo();
     }
 
     /**
@@ -44,7 +41,7 @@ class Task extends Model
      */
     public function assignee(): MorphTo
     {
-        return $this->morphTo('assignee', 'assignee_class', 'assignee_id');
+        return $this->morphTo();
     }
 
     /**
