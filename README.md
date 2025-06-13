@@ -26,6 +26,11 @@ class User extends Model
     use HasTasks;
 }
 
+class Project extends Model
+{
+    use HasTasks;
+}
+
 // Create a task
 $user->addTask(
     [
@@ -35,6 +40,9 @@ $user->addTask(
         'due_date' => now()->addDays(7),
     ]
 );
+
+// You can also attach tasks to other models
+$project->addTask(['name' => 'Deploy new version']);
 
 // Get all tasks
 $user->tasks;
