@@ -17,8 +17,6 @@ class TaskFactory extends Factory
      */
     public function definition(): array
     {
-        $this->faker->languageCode('da_DK');
-        $this->faker->locale('da_DK');
 
         return [
             'name' => fake()->name(),

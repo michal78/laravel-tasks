@@ -108,7 +108,7 @@ class Task extends Model
      */
     public function scopeDueToday($query): mixed
     {
-        return $query->where('due_date', now()->format('Y-m-d'));
+        return $query->whereDate('due_date', '=', now());
     }
 
     /**
@@ -117,7 +117,7 @@ class Task extends Model
      */
     public function scopeDueTomorrow($query): mixed
     {
-        return $query->where('due_date', now()->addDay()->format('Y-m-d'));
+        return $query->whereDate('due_date', '=', now()->addDay());
     }
 
     /**
@@ -126,7 +126,7 @@ class Task extends Model
      */
     public function scopeDueThisWeek($query): mixed
     {
-        return $query->whereBetween('due_date', [now()->startOfWeek()->format('Y-m-d'), now()->endOfWeek()->format('Y-m-d')]);
+        return $query->whereBetween('due_date', [now()->startOfWeek(), now()->endOfWeek()]);
     }
 
     /**
@@ -135,7 +135,7 @@ class Task extends Model
      */
     public function scopeDueNextWeek($query): mixed
     {
-        return $query->whereBetween('due_date', [now()->addWeek()->startOfWeek()->format('Y-m-d'), now()->addWeek()->endOfWeek()->format('Y-m-d')]);
+        return $query->whereBetween('due_date', [now()->addWeek()->startOfWeek(), now()->addWeek()->endOfWeek()]);
     }
 
     /**
@@ -144,7 +144,7 @@ class Task extends Model
      */
     public function scopeDueThisMonth($query): mixed
     {
-        return $query->whereBetween('due_date', [now()->startOfMonth()->format('Y-m-d'), now()->endOfMonth()->format('Y-m-d')]);
+        return $query->whereBetween('due_date', [now()->startOfMonth(), now()->endOfMonth()]);
     }
 
     /**
@@ -153,7 +153,7 @@ class Task extends Model
      */
     public function scopeDueNextMonth($query): mixed
     {
-        return $query->whereBetween('due_date', [now()->addMonth()->startOfMonth()->format('Y-m-d'), now()->addMonth()->endOfMonth()->format('Y-m-d')]);
+        return $query->whereBetween('due_date', [now()->addMonth()->startOfMonth(), now()->addMonth()->endOfMonth()]);
     }
 
     /**
@@ -162,7 +162,7 @@ class Task extends Model
      */
     public function scopeDueThisYear($query): mixed
     {
-        return $query->whereBetween('due_date', [now()->startOfYear()->format('Y-m-d'), now()->endOfYear()->format('Y-m-d')]);
+        return $query->whereBetween('due_date', [now()->startOfYear(), now()->endOfYear()]);
     }
 
     /**
@@ -171,7 +171,7 @@ class Task extends Model
      */
     public function scopeDueNextYear($query): mixed
     {
-        return $query->whereBetween('due_date', [now()->addYear()->startOfYear()->format('Y-m-d'), now()->addYear()->endOfYear()->format('Y-m-d')]);
+        return $query->whereBetween('due_date', [now()->addYear()->startOfYear(), now()->addYear()->endOfYear()]);
     }
 
     /**
@@ -252,7 +252,7 @@ class Task extends Model
      */
     public function scopeDueOnOrBeforeToday($query): mixed
     {
-        return $query->where('due_date', '<=', now()->format('Y-m-d'));
+        return $query->whereDate('due_date', '<=', now());
     }
 
     /**
@@ -261,7 +261,7 @@ class Task extends Model
      */
     public function scopeDueOnOrAfterToday($query): mixed
     {
-        return $query->where('due_date', '>=', now()->format('Y-m-d'));
+        return $query->whereDate('due_date', '>=', now());
     }
 
     /**
