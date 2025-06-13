@@ -19,7 +19,7 @@ composer require michal78/laravel-tasks
 
 ```php
 // Add the HasTasks trait to your model
-use Michal78\LaravelTasks\Traits\HasTasks;
+use Michal78\Tasks\Traits\HasTasks;
 
 class User extends Model
 {
@@ -49,8 +49,6 @@ $user->tasks()->completed()->get();
 $user->tasks()->completed()->future()->get();
 ```
 
-```php
-```
 
 ### Testing (Not implemented yet)
 
