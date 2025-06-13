@@ -19,6 +19,12 @@ abstract class TestCase extends Orchestra
             $table->timestamps();
         });
 
+        Schema::create('projects', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->timestamps();
+        });
+
         // run package migrations
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }

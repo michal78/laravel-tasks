@@ -20,4 +20,16 @@ class HasTasksTest extends TestCase
         $this->assertTrue($user->tasks->first()->is($task));
         $this->assertCount(1, $user->pendingTasks());
     }
+
+    public function test_task_owner_is_polymorphic()
+    {
+        $project = Project::create(['name' => 'Test Project']);
+
+        $task = $project->addTask(['name' => 'Project Task']);
+
+        $this->assertInstanceOf(Task::class, $task);
+        $this->assertEquals($project->id, $task->owner_id);
+        $this->assertEquals(Project::class, $task->owner_class);
+        $this->assertTrue($task->owner->is($project));
+    }
 }
