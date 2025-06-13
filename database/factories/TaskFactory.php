@@ -11,15 +11,20 @@ use Michal78\Tasks\Models\Task;
 class TaskFactory extends Factory
 {
     /**
+     * Configure the factory's faker instance.
+     */
+    public function withFaker(): \Faker\Generator
+    {
+        return \Faker\Factory::create('da_DK');
+    }
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
-        $this->faker->languageCode('da_DK');
-        $this->faker->locale('da_DK');
-
         return [
             'name' => fake()->name(),
             'description' => fake()->text(),
