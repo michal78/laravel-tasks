@@ -10,7 +10,7 @@ class Task extends Model
 {
     use HasFactory;
 
-    // Statusses
+    // Statuses
     const STATUS_PENDING = 'pending';
     const STATUS_COMPLETED = 'completed';
     const STATUS_RUNNING = 'running';
