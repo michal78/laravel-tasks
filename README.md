@@ -1,5 +1,8 @@
 # Laravel simple Tasks
 
+This package provides simple task management for Laravel applications. It is
+compatible with Laravel versions 8 through 12.
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/michal78/laravel-tasks.svg?style=flat-square)](https://packagist.org/packages/michal78/laravel-tasks)
 [![Total Downloads](https://img.shields.io/packagist/dt/michal78/laravel-tasks.svg?style=flat-square)](https://packagist.org/packages/michal78/laravel-tasks)
 ![GitHub Actions](https://github.com/michal78/laravel-tasks/actions/workflows/main.yml/badge.svg)
