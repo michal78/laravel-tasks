@@ -2,7 +2,9 @@
 
 namespace Michal78\Tasks;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
+use Michal78\Tasks\Console\Commands\DispatchDueTasksCommand;
 
 class TasksServiceProvider extends ServiceProvider
 {
@@ -22,13 +24,17 @@ class TasksServiceProvider extends ServiceProvider
                 __DIR__.'/../config/config.php' => config_path('laravel-tasks.php'),
             ], 'config');
 
-            // Publishing the translation files.
-            /*$this->publishes([
-                __DIR__.'/../resources/lang' => resource_path('lang/vendor/laravel-tasks'),
-            ], 'lang');*/
+            // Register package command
+            $this->commands([
+                DispatchDueTasksCommand::class,
+            ]);
 
-            // Registering package commands.
-            // $this->commands([]);
+            if (config('laravel-tasks.auto_schedule')) {
+                $this->app->booted(function () {
+                    $schedule = $this->app->make(Schedule::class);
+                    $schedule->command('tasks:dispatch')->everyMinute();
+                });
+            }
         }
     }
 
