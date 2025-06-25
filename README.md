@@ -47,7 +47,23 @@ $user->tasks()->completed()->get();
 
 // Get all tasks that are completed and have a due date in the future
 $user->tasks()->completed()->future()->get();
+
+// Schedule a job for a task
+$user->addTask([
+    'name' => 'Cleanup',
+    'job' => \App\Jobs\CleanupJob::class,
+    'job_data' => json_encode(['force' => true]),
+    'due_date' => now()->addMinutes(10),
+]);
 ```
+
+Run the dispatcher command manually if needed:
+
+```bash
+php artisan tasks:dispatch
+```
+
+When `TASKS_AUTO_SCHEDULE` is enabled (the default), this command is automatically scheduled to run every minute.
 
 
 ### Testing (Not implemented yet)
