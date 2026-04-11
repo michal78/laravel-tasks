@@ -10,39 +10,27 @@ use Michal78\Tasks\Models\Task;
  */
 class TaskFactory extends Factory
 {
-    /**
-     * Configure the factory's faker instance.
-     */
-    public function withFaker(): \Faker\Generator
-    {
-        return \Faker\Factory::create('da_DK');
-    }
+    protected $model = Task::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'description' => fake()->text(),
-            'status' => fake()->randomElement([
-                Task::STATUS_PENDING,
-                Task::STATUS_COMPLETED,
-                Task::STATUS_RUNNING,
+            'name' => fake()->sentence(3),
+            'taskable_id' => 1,
+            'taskable_type' => 'App\\Models\\User',
+            'type' => fake()->randomElement([
+                Task::TYPE_ACTION,
+                Task::TYPE_COMMAND,
+                Task::TYPE_EVENT,
+                Task::TYPE_SERVICE,
             ]),
-            'owner_id' => 1,
-            'owner_class' => 'App\Models\User',
-            'assignee_id' => 1,
-            'assignee_class' => 'App\Models\User',
-            'due_date' => fake()->dateTimeBetween('-3 month', '+3 month'),
-            'priority' => fake()->numberBetween(0, 10),
-            'completed_at' => null,
-            'completed_by' => null,
-            'created_at' => fake()->dateTimeBetween('-3 month', '+3 month'),
-            'updated_at' => fake()->dateTimeBetween('-3 month', '+3 month'),
+            'target' => 'app:task',
+            'method' => null,
+            'payload' => ['example' => true],
+            'run_at' => now()->addMinute(),
+            'status' => Task::STATUS_PENDING,
+            'error_message' => null,
+            'last_ran_at' => null,
         ];
     }
 }

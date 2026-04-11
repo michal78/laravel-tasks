@@ -3,34 +3,28 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Michal78\Tasks\Models\Task;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
+            $table->morphs('taskable');
             $table->string('name');
-            $table->text('description')->nullable();
-            $table->enum('status', ['pending', 'completed', 'running'])->default('pending');
-            $table->morphs('creator');
-            $table->morphs('assignee');
-            $table->string('job')->nullable();
-            $table->text('job_data')->nullable();
-            $table->timestamp('due_date')->nullable();
-            $table->integer('priority')->default(0);
-            $table->timestamp('completed_at')->nullable();
-            $table->unsignedBigInteger('completed_by')->nullable();
+            $table->string('type')->default(Task::TYPE_SERVICE);
+            $table->string('target');
+            $table->string('method')->nullable();
+            $table->json('payload')->nullable();
+            $table->timestamp('run_at')->index();
+            $table->string('status')->default(Task::STATUS_PENDING)->index();
+            $table->text('error_message')->nullable();
+            $table->timestamp('last_ran_at')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('tasks');

@@ -4,6 +4,7 @@ namespace Michal78\Tasks\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Michal78\Tasks\TasksServiceProvider;
 
@@ -21,6 +22,12 @@ abstract class TestCase extends Orchestra
 
         // run package migrations
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        Artisan::command('tasks:test-command {--model-type=} {--model-id=} {--flag=}', function () {
+            app()->instance('task_test.last_command_model_type', (string) $this->option('model-type'));
+            app()->instance('task_test.last_command_model_id', (string) $this->option('model-id'));
+            app()->instance('task_test.last_command_flag', (string) $this->option('flag'));
+        });
     }
 
     protected function getPackageProviders($app)

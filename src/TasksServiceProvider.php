@@ -3,6 +3,8 @@
 namespace Michal78\Tasks;
 
 use Illuminate\Support\ServiceProvider;
+use Michal78\Tasks\Commands\RunDueTasksCommand;
+use Michal78\Tasks\Support\TaskRunner;
 
 class TasksServiceProvider extends ServiceProvider
 {
@@ -40,9 +42,17 @@ class TasksServiceProvider extends ServiceProvider
         // Automatically apply the package configuration
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'laravel-tasks');
 
+        $this->app->singleton(TaskRunner::class);
+
         // Register the main class to use with the facade
-        $this->app->singleton('tasks', function () {
-            return new Tasks;
+        $this->app->singleton('tasks', function ($app) {
+            return new Tasks($app->make(TaskRunner::class));
         });
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                RunDueTasksCommand::class,
+            ]);
+        }
     }
 }
