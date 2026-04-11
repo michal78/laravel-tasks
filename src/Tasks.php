@@ -2,28 +2,34 @@
 
 namespace Michal78\Tasks;
 
-use Carbon\Carbon;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Collection;
+use Michal78\Tasks\Models\Task;
+use Michal78\Tasks\Support\TaskRunner;
 
 class Tasks
 {
-    public function addHolidays() {
-
+    public function __construct(
+        protected TaskRunner $taskRunner,
+    ) {
     }
 
-    /**
-     * @return Collection
-     */
-    public function getHolidays(): Collection
+    public function getDueTasks(): Collection
     {
-        $holidays = Cache::get('laravel-tasks.holidays');
+        return Task::query()
+            ->due()
+            ->orderBy('run_at')
+            ->get();
+    }
 
-        if(! $holidays) {
-            $holidays = file_get_contents('https://date.nager.at/api/v3/PublicHolidays/'.Carbon::now()->year.'/' . config('laravel-tasks.country'));
-            Cache::put('laravel-tasks.holidays', $holidays);
+    public function runDueTasks(): int
+    {
+        $processed = 0;
+
+        foreach ($this->getDueTasks() as $task) {
+            $this->taskRunner->run($task);
+            $processed++;
         }
 
-        return collect(json_decode($holidays));
+        return $processed;
     }
 }

@@ -1,78 +1,155 @@
-# Laravel simple Tasks
+# Laravel Tasks
 
-This package provides simple task management for Laravel applications. It is
-compatible with Laravel versions 8 through 12.
+`michal78/laravel-tasks` lets you attach scheduled tasks to any Eloquent model.
+
+A task can run one of four target types at a specific time:
+
+- Artisan command
+- Action class
+- Event class
+- Service class method
+
+The model is always passed into the target, and task runs can be logged (optional).
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/michal78/laravel-tasks.svg?style=flat-square)](https://packagist.org/packages/michal78/laravel-tasks)
 [![Total Downloads](https://img.shields.io/packagist/dt/michal78/laravel-tasks.svg?style=flat-square)](https://packagist.org/packages/michal78/laravel-tasks)
-![GitHub Actions](https://github.com/michal78/laravel-tasks/actions/workflows/main.yml/badge.svg)
+
+## Requirements
+
+- PHP 8.2+
+- Laravel 11 or 12
 
 ## Installation
-
-You can install the package via composer:
 
 ```bash
 composer require michal78/laravel-tasks
 ```
 
-## Usage
+Run migrations:
+
+```bash
+php artisan migrate
+```
+
+Optional config publish:
+
+```bash
+php artisan vendor:publish --provider="Michal78\Tasks\TasksServiceProvider" --tag=config
+```
+
+## Model Setup
+
+Add the trait to any model:
 
 ```php
-// Add the HasTasks trait to your model
+use Illuminate\Database\Eloquent\Model;
 use Michal78\Tasks\Traits\HasTasks;
 
 class User extends Model
 {
     use HasTasks;
 }
-
-// Create a task
-$user->addTask(
-    [
-        'name' => 'My task',
-        'description' => 'My task description',
-        'priority' => 2,
-        'due_date' => now()->addDays(7),
-    ]
-);
-
-// Get all tasks
-$user->tasks;
-
-// Get all tasks that are not completed
-$user->tasks()->notCompleted()->get();
-
-// Get all tasks that are completed
-$user->tasks()->completed()->get();
-
-// Get all tasks that are completed and have a due date in the future
-$user->tasks()->completed()->future()->get();
 ```
 
+## Scheduling Tasks
 
-### Testing (Not implemented yet)
+### Command task
+
+```php
+$user->scheduleCommandTask(
+    name: 'Sync user',
+    command: 'users:sync',
+    runAt: now()->addMinutes(10),
+    payload: ['--force' => true],
+);
+```
+
+The package injects these command options automatically:
+
+- `--model-type` (model class)
+- `--model-id` (model primary key)
+
+### Action task
+
+```php
+$user->scheduleActionTask(
+    name: 'Run action',
+    actionClass: \App\Actions\UserAction::class,
+    runAt: now()->addHour(),
+    payload: ['source' => 'onboarding'],
+);
+```
+
+Default method is `__invoke`. You can pass a custom method with the `method` argument.
+
+### Event task
+
+```php
+$user->scheduleEventTask(
+    name: 'Dispatch event',
+    eventClass: \App\Events\UserTaskDue::class,
+    runAt: now()->addMinutes(30),
+    payload: ['channel' => 'email'],
+);
+```
+
+Event constructor signature should accept:
+
+```php
+public function __construct(Model $model, array $payload, Task $task)
+```
+
+### Service task
+
+```php
+$user->scheduleServiceTask(
+    name: 'Call service',
+    serviceClass: \App\Services\UserTaskService::class,
+    runAt: now()->addDay(),
+    payload: ['dry_run' => false],
+    method: 'handle', // optional, defaults to handle
+);
+```
+
+## Running Due Tasks
+
+The package registers:
+
+```bash
+php artisan tasks:run-due
+```
+
+Add it to Laravel scheduler:
+
+```php
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('tasks:run-due')->everyMinute();
+```
+
+## Task Logging (Optional)
+
+Each run can be logged in `task_logs`.
+
+Config:
+
+```php
+// config/laravel-tasks.php
+return [
+    'logging' => [
+        'enabled' => env('TASKS_LOGGING_ENABLED', true),
+    ],
+];
+```
+
+When enabled, each task run stores status (`running`, `succeeded`, `failed`), start/end timestamps, and optional error message.
+
+## Testing
 
 ```bash
 composer test
 ```
 
-### Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-### Security
-
-If you discover any security related issues, please email michal.skogemann@gmail.com instead of using the issue tracker.
-
-## Credits
-
--   [Michal Skogemann](https://github.com/michal78)
--   [All Contributors](../../contributors)
-
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+MIT
