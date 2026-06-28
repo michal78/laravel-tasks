@@ -16,8 +16,8 @@ The model is always passed into the target, and task runs can be logged (optiona
 
 ## Requirements
 
-- PHP 8.2+
-- Laravel 11 or 12
+- PHP 8.2+ (Laravel 13 requires PHP 8.3+)
+- Laravel 11, 12, or 13
 
 ## Installation
 
