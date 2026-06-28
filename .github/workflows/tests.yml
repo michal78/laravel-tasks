@@ -40,7 +40,7 @@ jobs:
             "illuminate/database:${{ matrix.illuminate-version }}"
           composer require --dev --no-update --no-interaction \
             "orchestra/testbench:${{ matrix.testbench-version }}"
-          composer update --no-interaction --no-progress --prefer-dist
+          composer update --no-interaction --no-progress --prefer-dist --no-security-blocking
 
       - name: Run tests
         run: composer test
